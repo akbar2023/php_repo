@@ -621,10 +621,87 @@ foreach($tab as $indice => $valeur) {  // Quand il y a 2 variables après "as", 
 $client = ['prenom' => 'Nelson', 'nom' => 'Mandela', 'email' => 'n.mandela@gmail.com', 'telephone' => '0102030516'];
 
 
-foreach($client as $indice => $details){
+foreach($client as $indice => $detail){
     if ($indice == 'prenom') {
-        echo "<h3>$details</h3>";
+        echo "<h3>$indice : $detail</h3>";
     } else{
-    echo "<p> $details </p>";
+    echo "<p>$indice : $detail</p>";
     }
 }
+
+//--------------------------
+echo '<h2>Les arrays multidimensionnels </h2>';
+//-------------------------
+// Nous parlons de tableaux multidimensionnel quand un tableau est contenu dans un autre tableau. Chaque tableau représente une dimension
+
+// Création d'un tableau multidimensionnel :
+
+$tab_multi = array(
+    0 => array(
+        'prenom' => 'Julien',
+        'nom' => 'Dupon',
+        'tel' => '01 41 64 05 12'
+    ),
+    1 => array(
+        'prenom' => 'Nicolas',
+        'nom' => 'Duran',
+        'tel' => '06 41 64 05 12'
+    ),
+    2 => array(
+        'prenom' => 'Pierre',
+        'nom' => 'Dulac'
+    )
+);
+
+// Il est bien-sûr possible de choisir le nom des indices de notre array.
+
+debug($tab_multi);
+
+// Afficher la valeur "Julien" :
+
+echo $tab_multi[0]['prenom'] . '<hr>';  // affiche Julien. Nous allons d'abord dans $tab_multi, puis à l'indice "0", puis à l'indice "prenom".
+
+// ------
+// Parcourir le tableau multidimensionnel avec le boucle for :
+for ($i = 0; $i < count($tab_multi); $i++) {  // count($tab_multi) vaut "3" car il y a bien "3" éléments dans ce premier niveau de ce tableau
+    echo $tab_multi[$i]['prenom'] . '<br>';  // $i prend successivement les valeurs 0 puis 1 puis 2. On affiche donc à chaque tour de boucle "Julien" puis "Nicolas" puis "Pierre"
+}
+
+echo '<hr>';
+
+// Exercice :
+// Afficher les 3 prenoms avec la boucle foreach.
+
+foreach ($tab_multi as $indice => $valeur) {
+    echo $indice . ' : ' . $valeur['prenom'] . '<br>';
+
+}
+
+echo '<hr>';
+
+// Pour afficher tous les éléments d'un array multidimesionnel, on fait des boucles foreach imbriquées (une par dimension) :
+
+    foreach($tab_multi as $indice => $valeur) {
+        foreach($valeur as $label => $info) {  // $valeur étant lui même un array, je refais une foreach dessus pour lr parcourir
+            echo $label . ' => ' . $info . '<br>';  // $label correspond aux indices de $valeur et $info aux valeurs
+
+        }
+    }
+
+
+//--------------------------
+echo '<h2>Les inclusions de fichiers </h2>';
+//-------------------------
+
+echo 'Première inclusion';
+include 'exemple.inc.php';  // le fichier est "inclus" : en cas d'erreur lors de l'inclusion, include génère une erreur de type "warning" et continue l'exécution du script.
+
+echo 'Deuxième inclusion';
+include_once 'exemple.inc.php';  // le once vérifie si le fichier à déjà été inclus. Si c'est le cas, il ne le ré-inclut pas.
+
+echo 'Troisième inclusion';
+require 'exemple.inc.php';  // le fichier est requis : en cas d'erreur sur le nom ou le chemin du fichier, require génère une erreur de type "fatal error" et arrête l'exécution du script.
+
+echo 'Quatrième inclusion';
+require_once 'exemple.inc.php';  // le once vérifie si le fichier à déjà été inclus. Si c'est le cas, il ne le ré-inclut pas.
+
