@@ -113,7 +113,7 @@ L'ordre de travail avec la BDD :
 
             1) connecter à la BDD
             2) faire la requête 
-            3)fetch()
+            3) fetch()
             4) echo
 
 */
