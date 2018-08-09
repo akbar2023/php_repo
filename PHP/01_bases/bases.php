@@ -705,3 +705,28 @@ require 'exemple.inc.php';  // le fichier est requis : en cas d'erreur sur le no
 echo 'Quatrième inclusion';
 require_once 'exemple.inc.php';  // le once vérifie si le fichier à déjà été inclus. Si c'est le cas, il ne le ré-inclut pas.
 
+
+//--------------------------
+echo '<h2>Introduction aux objets </h2>';
+//-------------------------
+
+// Un objet est un autre type de données. Il permet de regrouper des informations : on peut y déclarer des variables appelées PROPRETE ou ATTRIBUTS, et des fonctions appelées METHODES.
+
+// Pour créer des objets, nous avons besoin d'un "plan de construction" : c'est le rôle de la classe (note : rien à voir avec le CSS...). Nous créons donc une classe pour récupérer nos meubles :
+
+class Meuble {  // on met une majuscule au nom de la classe par convention
+    public $marque = 'IKEA';  // on déclare une propriété "marque" ("public" pour dire qu'elle est accessible partout)
+
+    public function origine() {
+        return 'Origine Suédoise';
+    }
+}  // une class est un "plan" d'objet qui contient des propriétés et des méthodes. Ainsi en créant un objet à partir de cette class, cet objet "héritera" de ces propriétés et méthodes.
+
+// Enfin, on crée un objet "table" :
+$table = new Meuble();  // "new" est un mot clé qui permet d'instancier la class Meuble et d'en faire un objet. On dit que $table est une "instance" de Meuble 
+
+debug($table);  // nous pouvons observer le type de $table (object), le nom de la class dont il provient (Meuble), et sa seule propriété (marque).
+
+echo 'La marque de notre table est : ' . $table->marque . '<br>';  // Pour accèder à la propriété d'un objet, on écrit nom de l'objet suivi de "->" suivie du nom de la propriété. Affiche "IKEA"
+
+echo $table->origine();  // idem pour appeler une méthode d'un objet à laquelle on ajoute un paire de ().
