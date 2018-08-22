@@ -106,12 +106,218 @@ echo $employe->prenom . '<br>';
 
 
 
+/* Exercice : afficher le service de l'employé dont l'id_employe est 417 (production). */
+
+$result = $pdo->query("SELECT service FROM employes WHERE id_employes = 417 ");
+
+$employe = $result->fetch(PDO::FETCH_ASSOC); // on transforme l'objet  $result (qui n'est pas exploitable directement) en un array associatif avec pour indice le nom du champ du SELECT (ici service)
+
+debug($employe);  // on voit ici le contenu de l'array associatif 
+
+echo 'Le service de l\'employée est : ' . $employe['service'];
+
+
+
+// Si le requête retourne qu'un seul résultat pas de boucle. Si elle peut potentiellement en retourner plusieurs => boucle.
+
+
+
+// ---------------------------
+// 04 - fetch() avec boucle while (plusieurs résultats)
+// ---------------------------
+
+echo '<h3> 04 - fetch() avec boucle while (plusieurs résultats) </h3>';
+
+
+$resultat = $pdo->query("SELECT * FROM employes");  // cette requête retourne plusieurs résultats, on fait donc une boucle pour les parcourir
+
+echo 'Nombre d\'employés : ' . $resultat->rowCount() . '<br>';  // permet de compter le nombre de lignes retournés par le SELECT (exemple : nombre de produits selectionnés dans une boutique)
+
+while ($employe = $resultat->fetch(PDO::FETCH_ASSOC)) {  // fetch retourne la ligne SUIVANTE du jeu de résultats en un array associatif. La boucle while permet de faire avancer le curseur dans le jeu de résultat et s'arrête quand le curseur est arrivé à la fin (tant qu'il y a un employé, il transforme ses données en associatif)
+   
+    // debug($employe);   // $employe est un array associatif qui contient les données d'un seul employé à chaque tour de boucle
+    
+    
+    echo '<div>'. '<br>';
+        echo $employe['prenom'] . '<br>';
+        echo $employe['nom'] . '<br>'; 
+        echo $employe['service'] . '<br>';  
+
+    echo '--------- </div>'. '<br>';            
+
+}
+
+// Attention : il n'y a pas un array avec tous les enregistrement dedans, mais un array par enregistrement, un array par employé !
+
+
+// ---------------------------
+// 05 - Exercice
+// ---------------------------
+
+echo '<h3> 05 - Exercice </h3>';
+// Afficher la liste des différents services dans une liste <ul><li>.
+
+$resultat = $pdo->query("SELECT DISTINCT service FROM employes");  // Fonctionne aussi ici avec GROUP BY, mais ce dernier est plustôt utilisé avec les fonctions d'aggrégats (pour faire des sommes) comme : SUM(), COUNT(), MIN(), MAX(), et AVG()
+$employe = $resultat->fetch(PDO::FETCH_ASSOC);
+
+
+echo '<ul>';
+while ($employe = $resultat->fetch(PDO::FETCH_ASSOC)) {
+    
+    echo '<li>' . $employe['service'] . '</li>';
+
+}
+echo '</ul>';
+
+
+// ---------------------------
+// 06 - fetchAll()   (fetch = transformer)
+// ---------------------------
+
+echo '<h3> 06 - fetchAll()   (fetch = transformer) </h3>';
+
+$resultat = $pdo->query("SELECT * FROM employes");
+
+debug($resultat);
+
+$donnees = $resultat->fetchAll(PDO::FETCH_ASSOC);  // retourne toutes les lignes de résultats dans un tableau multidimensionnel (sans faire de boucle) : nous avons 1 array associatif par employé à chaque indice numérique.   
+
+debug($donnees);  // array multidimensionnelle
+
+// Pour afficher son contenu, on fait une boucle foreach : 
+echo '<hr>';
+foreach($donnees as $employe) {
+    // debug($employe);  // $employes correspond au sous array qui représente 1 employé à chaque tour de boucle
+
+    echo "<div>
+            <p>$employe[prenom]</p>  
+            <p>$employe[nom]</p>
+            <p>$employe[salaire]€</p>            
+        </div><hr>";// on ne met pas de quotes ici entre les indices car ils sont entourés de ("")
+}
+
+// Si nous avions voulu afficher TOUTES les infos de façon dynamique, nous aurions fait 2 foreach imbriquées l'une dans l'autre.
+
+
+// ---------------------------
+// 07 - Table HTML
+// ---------------------------
+
+echo '<h3> 07 - Table HTML </h3>';
+
+// On veut afficher dynamiquement les résultats de la requête sous forme de table HTML.
+
+$resultat = $pdo->query("SELECT id_employes, prenom, nom, service, salaire FROM employes ORDER BY salaire DESC");
+
+echo '<table border="1">';
+
+    // La ligne d'entêtes :
+    echo '<tr>';
+        echo '<th>id employés</th>';
+        echo '<th>Prénom</th>';
+        echo '<th>Nom</th>';
+        echo '<th>Service</th>';
+        echo '<th>Salaire</th>';
+    echo '</tr>';
+
+        // Affichage des autres lignes : 
+        while($ligne = $resultat->fetch(PDO::FETCH_ASSOC)) {
+            echo '<tr>';
+                // affichage des informations de chaque ligne $ligne :
+                foreach($ligne as $info){
+                    echo '<td>' . $info . '</td>';
+                }
+
+            echo '</tr>';
+        }
+echo '</table>';
+
+
+// ---------------------------
+// 08 - Requête préparée et bindParam()
+// ---------------------------
+
+echo '<h3> 08 - Requête préparée et bindParam() </h3>';
+
+$nom = 'sennard';
+
+// 1- Préparer la requête :
+$resultat = $pdo->prepare("SELECT * FROM employes WHERE nom = :nom"); // :nom est un marquer nominatif qui attend qu'on lui donne une valeur
+
+// 2- Lier les marquers aux valeurs :
+ $resultat->bindParam(':nom', $nom);   // (bind = lier)  // bindParam() reçoit exclusivement une variable vers laquelle pointe le marqueur. On ne êut pas y mettre une valeur directement, sinon il faut utiliser bindValue() à laplace de bindParam().  
+
+// 3- Exécuter la requête :
+$resultat->execute();
+
+// 4- Affichage 
+$donnees = $resultat->fetch(PDO::FETCH_ASSOC);
+debug($donnees); 
+
+/* 
+prepare() permet de préparer la requête mais ne l'exécute pas.
+execute() permet d'exécuter une requête préparée.
+
+Valeurs de retour :
+        prepare() renvoie toujours un objet PDOstatement
+        execute() : 
+            En cas de succès : TRUE
+            En cas d'échec : FALSE
+
+Les requêtes préparées sont préconisées si vpus exécutez plusieurs fois la même requête et ainsi éviter de refaire le cycle complet(analyse/interprétation/exécution) réalisé par le SGBD (on ne refait que le execute).
+
+Les requêtes préparées sont souvent utilisées pour assainir les données (ce que nous verrons dans un chapitre ultérieur).
+
+*/
+
+// ---------------------------
+// 09 - Requête préparée : point complémentaires
+// ---------------------------
+
+echo '<h3> 09 - Requête préparée : point complémentaires </h3>';
+
+echo '<h4>Le marqeur "?"</h4>';
+
+$resultat = $pdo->prepare("SELECT * FROM employes WHERE nom = ? AND prenom = ? ");   // on prépare dans un premier temps, la requête avec des marquers sous forme de "?"
+
+$resultat->execute(array('durand', 'damien'));  // "durand" va remplacer le premier "?" et "damien" va remplacer de second "?"
+
+$donnees = $resultat->fetch(PDO::FETCH_ASSOC);  // pas de while car il n'y a qu'un seul résultat
+
+echo $donnees['prenom'] . ' ' . $donnees['nom'] . ' ' . $donnees['service'] . '.';
+ 
+
+
+// ---------
+echo '<h4>execute() sans bindParam() : </h4>';
+$resultat = $pdo->prepare("SELECT * FROM employes WHERE nom = :nom AND prenom = :prenom ");
+
+$resultat->execute(array(':nom' => 'chevel', ':prenom'=>'daniel'));  // on peut associer directement dans les () de execute() les marquers de la requête SQL à leur valeur. Notez qu'il est possible de ne pas mettre les ":" avant le nom des marqeurs dans cet array 
+
+$donnees = $resultat->fetch(PDO::FETCH_ASSOC);  
+echo $donnees['prenom'] . ' ' . $donnees['nom'] . ' ' . $donnees['service'] . '.';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 *****************************  RESUME  **************************
 
 L'ordre de travail avec la BDD :
 
-            1) connecter à la BDD
+            1) connexion à la BDD
             2) faire la requête 
             3)fetch()
             4) echo
