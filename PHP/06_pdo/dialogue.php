@@ -30,10 +30,16 @@ $pdo = new PDO('mysql:host=localhost;dbname=dialogue',  // driver mysql : serveu
 
 
 // var_dump($_POST);
-print_r($_POST);
+// print_r($_POST);
 
 if (!empty($_POST)) {  // signifie si le formulaire est remplie
-    // .......
+    // Traitement contre les failles JS (XSS)  ou les failles CSS : on parle d'échappement des données reçues :
+    // On commence par mettre du code CSS dans le champ "message" : <style>body{display:none}</style>
+    // Pour s'en prémunir :
+    $_POST['pseudo'] = htmlspecialchars($_POST['pseudo'], ENT_QUOTES);  //convertit les caractères spéciaux (<, >, &, "", '') en entités HTML (exemple : le "<" devient " &lt; " ) ce qui permet de rendre innofensives les balises HTML. on parle d'échappement des données reçues.
+    $_POST['message'] = htmlspecialchars($_POST['message'], ENT_QUOTES);
+
+
 
     // Intsertion de commentaire de l'internaute en BDD : nous allons faire une première requête qui n'est pas protégée contre les injections et qui n'accepte pas les apostrophes :
 
@@ -55,14 +61,6 @@ if (!empty($_POST)) {  // signifie si le formulaire est remplie
     // Comment ça marche ? le fait de mettre des marqueurs dans la requête permet de ne pas concaténer les instructions SQL avce l'injection SQL. Par ailleurs, en faisant un bindParam, les instructions SQL sont dissociées les une des autres et neutralisées par PDO qui les transforment en strings innofensifs. En effet, le SGBD attends des valeurs à la place des marqueurs dont il sait qu'elles ne sont pas du code à exécuter
 
 }
-
-
-
-
-
-
-
-
 
 
 ?>
@@ -101,3 +99,6 @@ while ($commentaire = $resultat->fetch(PDO::FETCH_ASSOC)) {
     echo '<p>' . $commentaire['message'] . '</p>';  
 
 }
+
+
+// Conclusion : faire systématiquement sur données reçues : 1 htmlspecialchars() et une requête préparée !
