@@ -21,3 +21,36 @@ function internauteEstConnecte() {
     // OU :
     // return (isset($_SESSION['membre']));
 }
+
+// Fonction qui indique si le membre est admin connecté :
+function internauteEstConnecteEtAdmin() {
+    if(internauteEstConnecte() && $_SESSION['membre']['statut'] == 1 ) {  // si membre connecté ET que son statut dans la session vaut 1, il est admin connecté
+        return true;
+    } else {
+        return false;
+    }
+
+    return (internauteEstConnecte() && $_SESSION['membre']['statut']==1);
+
+}  // fin de la fonction internauteEstConnecteEtAdmin() 
+
+// ----------------- fonction de requête ------------------------
+function executeRequete($req, $param = array()) {  // cette requête attend 2 valeurs : 1 requête SQl (obligatoire) et un array qui associe les marqueurs aux valeurs (non obligatoire car on a affecté au paramètre $param un array() vide par défaut)
+    
+    // Echappement des données reçues avec htmlspecialchars :
+    if (!empty($param)) { // si l'array $param n'est pas vide, je peux faire la boucle :
+        foreach($param as $indice => $valeur) {
+            $param[$indice] = htmlspecialchars($valeur, ENT_QUOTES);  // on échappe les valeurs de $param que l'on remet à leur palce dans $param[$indice]
+        }
+    }
+
+    global $pdo;  // permet d'avoir accès à la variable $pdo définie dans l'espace global (c'est-à-dire hors de cette fonction) au sein de cette fonction
+
+    $result = $pdo->prepare($req);  // on prépare la requête envoyée à notre fonction
+    $result->execute($param);  // on exécute la requête en lui donnant l'array présent dans $param qui associe tous les marquers à leur valeur
+    return $result;  // on retourne le résultat de la requête de SELECT
+
+
+
+
+} // fin executeRequete()
