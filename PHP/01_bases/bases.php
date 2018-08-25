@@ -58,7 +58,7 @@ $a = true;  // true ou bien false
 echo gettype($a);  // ici boolean 
 echo '<br>';
 
-// Par convention un bom de variable commence en minuscule, puis on met une majuscule à chaque mot. Il peut contenir des chiffres mais jamais au début ou un "_" (pas au début car signification particulière en orienté-objet, ni à la fin).
+// Par convention un nom de variable commence en minuscule, puis on met une majuscule à chaque mot (camelCase). Il peut contenir des chiffres mais jamais au début ou un "_" (pas au début car signification particulière en orienté-objet, ni à la fin).
 
 //---------------------------------
 echo '<h2>Concaténation </h2>';
@@ -95,7 +95,7 @@ echo '<h2>Constantes </h2>';
 
 // Une constante permet de conserver une valeur sauf que celle-ci ne pourra pas être modofiée durant l'exécution du ou des scripts. s'utilise par exemple pour conserver les paramètres de connexion à la BDDafin de ne pas pouvoir les altérer.
 
-define('CAPITALE','Paris');  // déclare la constante appelée CAPITALE et lui affecte la valeur "Paris". Par convention les constantest s'écrivent en majuscules.
+define('CAPITALE','Paris');  // déclare la constante appelée CAPITALE et lui affecte la valeur "Paris". Par convention les constantest s'écrivent en majuscule.
 echo CAPITALE . '<br>';  // affiche Paris
 
 //---------------------------------
@@ -176,7 +176,7 @@ $question2 = 'je vote';  // exemple d'un questionnaire avec plusieurs possibles
 if ($question1 == 'mineur' XOR $question2 == 'je vote'){  // avec le OU exclusif seulement l'une des 2 conditions doit être valide 
     echo 'Vos réponses sont cohérentes <br>';
 } else{
-    echo 'Vos réponses ne sont pas cohérentes <br>';  // si les 2 conditions sont vraies (cas "mineur vote") ou si les é conditions sont fausses ( cas de "majeur ne vote pas") nous entrons dans le else
+    echo 'Vos réponses ne sont pas cohérentes <br>';  // si les 2 conditions sont vraies (cas "mineur vote") ou si les conditions sont fausses ( cas de "majeur ne vote pas") nous entrons dans le else
 }
 
 // ----
@@ -206,7 +206,7 @@ if ($varA === $varB) {  // on compare à la fois en valeur et en type avec l'op�
     echo '$varA est différentr à $varB en valeur OU en type <br>';
 }
 
-// Pour mémoire, le simple = correspond à une affectation.
+// Rappel : le simple = correspond à une affectation.
 
 // -----------
 // isset() et empty() :
