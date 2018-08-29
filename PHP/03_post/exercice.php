@@ -20,7 +20,7 @@
 </head>
 <body>
     <h1>Formulaire :</h1>
-    <form method="post" action="exercice-traitement.php">
+    <form method="post" action="exercice-traitement.php"> <!-- action = url de destination des données, Ce qui fait que lorsque je clique sur envoyer ç aouvre la page exercice-traitement.php -->
 
         <div>
             <label for="ville">Ville</label>

@@ -2,7 +2,8 @@
 
 require_once 'inc/init.inc.php';
 
-$inscription = false;  // pour savoir si l'internaute vien de s'inscrire (on mettra la variable à true) et ne plus afficher le formulaire d'inscription
+$inscription = false;  // pour savoir si l'internaute vient de s'inscrire (on mettra la variable à true) et ne plus afficher le formulaire d'inscription
+
 // var_dump($_POST);
 
 // Traitement du formulaire
