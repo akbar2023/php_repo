@@ -6,7 +6,7 @@
 Un cookie est un petit fichier (4ko max) déposé par le serveur du site sur le poste de l'internaute et qui peut contenir des informations. Les cookies sont automatiquement renvoyés au serveur web par le navigateur lorsque l'internaute navigue dans les pages concernées par les cookies. PHP permet de récupérer très facilement les données contenues dans un cookie : ses informations sont stoxkées dans la superglobale $_COOKIE.
 
 Précaution à prendre avec les cookies :
-Un cookie étant sauvegarder sur le post de l'internet, il peut potentiellement être volé ou détourné. On y met donc que des informations d'importance mineure : préférences, traces e visites...
+Un cookie étant sauvegardée sur le post de l'internaute, il peut potentiellement être volé ou détourné. On y met donc que des informations d'importance mineure : préférences, traces et visites...
 
 */
 
