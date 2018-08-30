@@ -1,33 +1,6 @@
 <?php
-$contenu = '';
 
-$inscription = false;
-
-$pdo = new PDO('mysql:host=localhost;dbname=contacts','root',
-                '',array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8') 
-            );
-
-
-// ----------------- fonction de requête ------------------------
-function executeRequete($req, $param = array()) {  // cette requête attend 2 valeurs : 1 requête SQl (obligatoire) et un array qui associe les marqueurs aux valeurs (non obligatoire car on a affecté au paramètre $param un array() vide par défaut)
-    
-    // Echappement des données reçues avec htmlspecialchars :
-    if (!empty($param)) { // si l'array $param n'est pas vide, je peux faire la boucle :
-        foreach($param as $indice => $valeur) {
-            $param[$indice] = htmlspecialchars($valeur, ENT_QUOTES);  // on échappe les valeurs de $param que l'on remet à leur palce dans $param[$indice]
-        }
-    }
-
-    global $pdo;  // permet d'avoir accès à la variable $pdo définie dans l'espace global (c'est-à-dire hors de cette fonction) au sein de cette fonction
-
-    $result = $pdo->prepare($req);  // on prépare la requête envoyée à notre fonction
-    $result->execute($param);  // on exécute la requête en lui donnant l'array présent dans $param qui associe tous les marquers à leur valeur
-    return $result;  // on retourne le résultat de la requête de SELECT
-
-
-} // fin executeRequete()
-
-
+// ---------------- Exercice -----------
 /* 
 1 - Créer une base de données "contacts" avec une table "contact" :
         id_contact       PK AI INT(3)
@@ -51,27 +24,48 @@ function executeRequete($req, $param = array()) {  // cette requête attend 2 va
 
 4 - Ajouter les contacts à la BDD et afficher un message en cas de succès ou en cas d'échec.
 
+------------- fin enoncé exercie ------------
 */
-print_r($_POST);
 
+$contenu = '';
+
+$inscription = false;
+
+// ---------- Connexion à la BDD ------------
+
+$pdo = new PDO('mysql:host=localhost;dbname=contacts','root',
+                '',array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING,PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8') 
+            );
+
+
+
+
+// echo '<pre>';
+// print_r($_POST);
+// echo '</pre>';
+
+
+
+// ---------- Traitement du Formulaire -----------
 if (!empty($_POST)) {
     // Nom
-    if (!isset($_POST['nom']) || strlen($_POST['nom']) < 2 || strlen($_POST['nom']) > 20 ) $contenu .= '<div>Le nom doit contenir entre 2 et 20 caractères</div>';
+    if (!isset($_POST['nom']) || strlen($_POST['nom']) < 2 || strlen($_POST['nom']) > 20 ) $contenu .= '<div>Le nom doit contenir entre 2 et 20 caractères.</div>';
     
     //Prénom
     if (!isset($_POST['prenom']) || strlen($_POST['prenom']) < 2 || strlen($_POST['prenom']) > 20 ) $contenu .= '<div>Le prénom doit contenir entre 2 et 20 caractères</div>';
     
     // Téléphone
-    if (!isset($_POST['telephone']) || strlen($_POST['telephone']) != 10 || !is_numeric($_POST['telephone'])) $contenu .= '<div>Le numéro est incorrecte !</div>';
+    if (!isset($_POST['telephone']) || strlen($_POST['telephone']) != 10 || !ctype_digit($_POST['telephone'])) $contenu .= '<div>Le numéro est incorrecte !</div>'; // ctype_digit() vérifie bien que le champ comporte bien un nombre entier (sans virgule) contrairement à is_numeric()
 
     // Annee
-    if (!isset($_POST['annee']) || strlen($_POST['annee']) != 4 || !is_numeric($_POST['annee']) || $_POST['annee'] > 2018|| $_POST['annee'] < 1918) $contenu .= '<div>L\'année de votre rencontre est incorrecte !</div>';
+    if (!isset($_POST['annee']) || !ctype_digit($_POST['annee']) || $_POST['annee'] > date('Y') || $_POST['annee'] < date('Y')-100) $contenu .= '<div>L\'année de votre rencontre est incorrecte !</div>';
 
+    
     // Email
-    if (!isset($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) $contenu .= '<div>Email est incorrecte</div>';  
+    if (!isset($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) $contenu .= '<div>l\'mail est incorrecte</div>';  // fonctionne aussi avec FILTER_VALIDATE_URL
 
     // Type de contact
-    if (!isset($_POST['type']) || $_POST['type'] != 'ami' && $_POST['type'] != 'famille' && $_POST['type'] != 'professionnel' && $_POST['type'] != 'autre') $contenu .= '<div>Le type de votre contact est invalide !</div>';
+    if (!isset($_POST['type']) || ($_POST['type'] != 'ami' && $_POST['type'] != 'famille' && $_POST['type'] != 'professionnel' && $_POST['type'] != 'autre')) $contenu .= '<div>Le type de votre contact est incorrect !</div>';
 
 
     // -----------------------------
@@ -84,7 +78,7 @@ if (!empty($_POST)) {
             $_POST[$indice] = htmlspecialchars($valeur, ENT_QUOTES);
         }
     
-        // On fait un erequête préparée :
+        // On fait une requête préparée :
         $result = $pdo->prepare("INSERT INTO contact(nom, prenom, telephone, annee, email, type) VALUES (:nom, :prenom, :telephone, :annee, :email, :type)");
     
         $result->bindParam(':nom', $_POST['nom']);
@@ -114,11 +108,7 @@ if (!empty($_POST)) {
     
     } // fin empty $contenu
 
-} // fin !empty $_POST
-
-
-
-
+} // fin !empty $_POST ------ traitement formulaire
 
 
 ?>
@@ -151,21 +141,15 @@ if (!empty($_POST)) {
     <label for="annee">Année de rencontre :</label>
     <select name="annee" id="annee">
         <?php 
-        
-        // $annee_actuelle = annee() {
-        //  return time() + (365*24*60*60); 
-        // }
-        
-        // $annee_actuelle = 2018;
-        
-        for($i = 2018; $i >= 1918; $i--) {
+
+        for($i = date('Y'); $i >= date('Y')-100; $i--) { // date('Y') : fonction prédéfinie qui affiche l'année en cours (ici :2018)
             echo "<option>$i</option>";
         }
         ?>
     </select> <br><br>
 
     <label for="email">Email :</label>     
-    <input type="email" name="email" id="email"> <br><br>
+    <input type="text" name="email" id="email"> <br><br>
 
     <label for="type">Relation :</label>
     <select name="type" id="type">
