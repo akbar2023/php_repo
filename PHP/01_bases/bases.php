@@ -31,7 +31,7 @@ print_r('message');
 echo '<br>';
 var_dump('message');
 
-// pour faire in commentaire php sur une seule ligne
+// pour faire un commentaire php sur une seule ligne
 /* 
 Pour faire un commentaire 
 sur plusieurs lignes
@@ -334,7 +334,7 @@ Pour chercher une fonction ou autre chose de php : faire google "PHP nom de la f
 //--------------------------
 echo '<h2>Les fonctions utilisateurs </h2>';
 //-------------------------
-// Les fonctions sont des morceaux de codes encapsulés dans des accolades et portant un nom, qu'on appelle au besoinpour exécuter une action précise.
+// Les fonctions sont des morceaux de codes encapsulés dans des accolades et portant un nom, qu'on appelle au besoin pour exécuter une action précise.
 
 // Les fonctions qui ne sont pas prédéfinis mais déclarées par le développeur sont appelés fonctions utilisateur.
 
@@ -710,7 +710,7 @@ require_once 'exemple.inc.php';  // le once vérifie si le fichier à déjà ét
 echo '<h2>Introduction aux objets </h2>';
 //-------------------------
 
-// Un objet est un autre type de données. Il permet de regrouper des informations : on peut y déclarer des variables appelées PROPRETE ou ATTRIBUTS, et des fonctions appelées METHODES.
+// Un objet est un autre type de données. Il permet de regrouper des informations : on peut y déclarer des variables appelées PROPRIETES ou ATTRIBUTS, et des fonctions appelées METHODES.
 
 // Pour créer des objets, nous avons besoin d'un "plan de construction" : c'est le rôle de la classe (note : rien à voir avec le CSS...). Nous créons donc une classe pour récupérer nos meubles :
 
